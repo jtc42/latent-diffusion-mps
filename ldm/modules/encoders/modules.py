@@ -31,7 +31,7 @@ class ClassEmbedder(nn.Module):
 
 class TransformerEmbedder(AbstractEncoder):
     """Some transformer encoder layers"""
-    def __init__(self, n_embed, n_layer, vocab_size, max_seq_len=77, device="cuda"):
+    def __init__(self, n_embed, n_layer, vocab_size, max_seq_len=77, device="mps"):
         super().__init__()
         self.device = device
         self.transformer = TransformerWrapper(num_tokens=vocab_size, max_seq_len=max_seq_len,
@@ -48,7 +48,7 @@ class TransformerEmbedder(AbstractEncoder):
 
 class BERTTokenizer(AbstractEncoder):
     """ Uses a pretrained BERT tokenizer by huggingface. Vocab size: 30522 (?)"""
-    def __init__(self, device="cuda", vq_interface=True, max_length=77):
+    def __init__(self, device="mps", vq_interface=True, max_length=77):
         super().__init__()
         from transformers import BertTokenizerFast  # TODO: add to reuquirements
         self.tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
@@ -76,7 +76,7 @@ class BERTTokenizer(AbstractEncoder):
 class BERTEmbedder(AbstractEncoder):
     """Uses the BERT tokenizr model and add some transformer encoder layers"""
     def __init__(self, n_embed, n_layer, vocab_size=30522, max_seq_len=77,
-                 device="cuda",use_tokenizer=True, embedding_dropout=0.0):
+                 device="mps",use_tokenizer=True, embedding_dropout=0.0):
         super().__init__()
         self.use_tknz_fn = use_tokenizer
         if self.use_tknz_fn:

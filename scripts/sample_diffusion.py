@@ -220,7 +220,8 @@ def get_parser():
 def load_model_from_config(config, sd):
     model = instantiate_from_config(config)
     model.load_state_dict(sd,strict=False)
-    model.cuda()
+    
+    model.to(device="mps", dtype=torch.float32)
     model.eval()
     return model
 

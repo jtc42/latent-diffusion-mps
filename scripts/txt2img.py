@@ -25,7 +25,7 @@ def load_model_from_config(config, ckpt, verbose=False):
         print("unexpected keys:")
         print(u)
 
-    model.cuda()
+    model.to(device="mps", dtype=torch.float32)
     model.eval()
     return model
 
@@ -103,12 +103,10 @@ if __name__ == "__main__":
     )
     opt = parser.parse_args()
 
-
     config = OmegaConf.load("configs/latent-diffusion/txt2img-1p4B-eval.yaml")  # TODO: Optionally download from same location as ckpt and chnage this logic
     model = load_model_from_config(config, "models/ldm/text2img-large/model.ckpt")  # TODO: check path
 
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-    model = model.to(device)
+    device = torch.device("mps")
 
     if opt.plms:
         sampler = PLMSSampler(model)
