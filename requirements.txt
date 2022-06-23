@@ -2,8 +2,8 @@
 --pre
 wheel
 
-torch
-torchvision
+torch==1.13.0.dev20220623
+torchvision==0.14.0.dev20220623
 
 omegaconf>=2.0.0
 pytorch-lightning>=1.0.8
