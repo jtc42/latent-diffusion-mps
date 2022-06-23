@@ -19,6 +19,13 @@
 <img src=assets/modelfigure.png />
 </p>
 
+## MPS backend
+
+This fork enables latent-diffusion to run with [GPU acceleration on Apple Silicon](https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/). 
+Note that as a result, this code will *not* run on any non-Mac machine.
+
+Everything should work as documented below. Notebooks in the `scripts` directory have been modified to run using this repo with MPS compatibility.
+
 ## News
 ### April 2022
 - Thanks to [Katherine Crowson](https://github.com/crowsonkb), classifier-free guidance received a ~2x speedup and the [PLMS sampler](https://arxiv.org/abs/2202.09778) is available. See also [this PR](https://github.com/CompVis/latent-diffusion/pull/51).
@@ -197,18 +204,18 @@ where ``<config_spec>`` is one of {`celebahq-ldm-vq-4`(f=4, VQ-reg. autoencoder,
 
 All models were trained until convergence (no further substantial improvement in rFID).
 
-| Model                   | rFID vs val | train steps           |PSNR           | PSIM          | Link                                                                                                                                                  | Comments              
-|-------------------------|------------|----------------|----------------|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------|
-| f=4, VQ (Z=8192, d=3)   | 0.58       | 533066 | 27.43  +/- 4.26 | 0.53 +/- 0.21 |     https://ommer-lab.com/files/latent-diffusion/vq-f4.zip                   |  |
-| f=4, VQ (Z=8192, d=3)   | 1.06       | 658131 | 25.21 +/-  4.17 | 0.72 +/- 0.26 | https://heibox.uni-heidelberg.de/f/9c6681f64bb94338a069/?dl=1  | no attention          |
-| f=8, VQ (Z=16384, d=4)  | 1.14       | 971043 | 23.07 +/- 3.99 | 1.17 +/- 0.36 |       https://ommer-lab.com/files/latent-diffusion/vq-f8.zip                     |                       |
-| f=8, VQ (Z=256, d=4)    | 1.49       | 1608649 | 22.35 +/- 3.81 | 1.26 +/- 0.37 |   https://ommer-lab.com/files/latent-diffusion/vq-f8-n256.zip |  
-| f=16, VQ (Z=16384, d=8) | 5.15       | 1101166 | 20.83 +/- 3.61 | 1.73 +/- 0.43 |             https://heibox.uni-heidelberg.de/f/0e42b04e2e904890a9b6/?dl=1                        |                       |
-|                         |            |  |                |               |                                                                                                                                                    |                       |
-| f=4, KL                 | 0.27       | 176991 | 27.53 +/- 4.54 | 0.55 +/- 0.24 |     https://ommer-lab.com/files/latent-diffusion/kl-f4.zip                                   |                       |
-| f=8, KL                 | 0.90       | 246803 | 24.19 +/- 4.19 | 1.02 +/- 0.35 |             https://ommer-lab.com/files/latent-diffusion/kl-f8.zip                            |                       |
-| f=16, KL     (d=16)     | 0.87       | 442998 | 24.08 +/- 4.22 | 1.07 +/- 0.36 |      https://ommer-lab.com/files/latent-diffusion/kl-f16.zip                                  |                       |
- | f=32, KL     (d=64)     | 2.04       | 406763 | 22.27 +/- 3.93 | 1.41 +/- 0.40 |             https://ommer-lab.com/files/latent-diffusion/kl-f32.zip                            |                       |
+| Model                   | rFID vs val | train steps | PSNR            | PSIM          | Link                                                          | Comments     |
+| ----------------------- | ----------- | ----------- | --------------- | ------------- | ------------------------------------------------------------- | ------------ |
+| f=4, VQ (Z=8192, d=3)   | 0.58        | 533066      | 27.43  +/- 4.26 | 0.53 +/- 0.21 | https://ommer-lab.com/files/latent-diffusion/vq-f4.zip        |              |
+| f=4, VQ (Z=8192, d=3)   | 1.06        | 658131      | 25.21 +/-  4.17 | 0.72 +/- 0.26 | https://heibox.uni-heidelberg.de/f/9c6681f64bb94338a069/?dl=1 | no attention |
+| f=8, VQ (Z=16384, d=4)  | 1.14        | 971043      | 23.07 +/- 3.99  | 1.17 +/- 0.36 | https://ommer-lab.com/files/latent-diffusion/vq-f8.zip        |              |
+| f=8, VQ (Z=256, d=4)    | 1.49        | 1608649     | 22.35 +/- 3.81  | 1.26 +/- 0.37 | https://ommer-lab.com/files/latent-diffusion/vq-f8-n256.zip   |
+| f=16, VQ (Z=16384, d=8) | 5.15        | 1101166     | 20.83 +/- 3.61  | 1.73 +/- 0.43 | https://heibox.uni-heidelberg.de/f/0e42b04e2e904890a9b6/?dl=1 |              |
+|                         |             |             |                 |               |                                                               |              |
+| f=4, KL                 | 0.27        | 176991      | 27.53 +/- 4.54  | 0.55 +/- 0.24 | https://ommer-lab.com/files/latent-diffusion/kl-f4.zip        |              |
+| f=8, KL                 | 0.90        | 246803      | 24.19 +/- 4.19  | 1.02 +/- 0.35 | https://ommer-lab.com/files/latent-diffusion/kl-f8.zip        |              |
+| f=16, KL     (d=16)     | 0.87        | 442998      | 24.08 +/- 4.22  | 1.07 +/- 0.36 | https://ommer-lab.com/files/latent-diffusion/kl-f16.zip       |              |
+| f=32, KL     (d=64)     | 2.04        | 406763      | 22.27 +/- 3.93  | 1.41 +/- 0.40 | https://ommer-lab.com/files/latent-diffusion/kl-f32.zip       |              |
 
 ### Get the models
 
@@ -222,18 +229,18 @@ The first stage models can then be found in `models/first_stage_models/<model_sp
 
 
 ## Pretrained LDMs
-| Datset                          |   Task    | Model        | FID           | IS              | Prec | Recall | Link                                                                                                                                                                                   | Comments                                        
-|---------------------------------|------|--------------|---------------|-----------------|------|------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|
-| CelebA-HQ                       | Unconditional Image Synthesis    |  LDM-VQ-4 (200 DDIM steps, eta=0)| 5.11 (5.11)          | 3.29            | 0.72    | 0.49 |    https://ommer-lab.com/files/latent-diffusion/celeba.zip     |                                                 |  
-| FFHQ                            | Unconditional Image Synthesis    |  LDM-VQ-4 (200 DDIM steps, eta=1)| 4.98 (4.98)  | 4.50 (4.50)   | 0.73 | 0.50 |              https://ommer-lab.com/files/latent-diffusion/ffhq.zip                                              |                                                 |
-| LSUN-Churches                   | Unconditional Image Synthesis   |  LDM-KL-8 (400 DDIM steps, eta=0)| 4.02 (4.02) | 2.72 | 0.64 | 0.52 |         https://ommer-lab.com/files/latent-diffusion/lsun_churches.zip        |                                                 |  
-| LSUN-Bedrooms                   | Unconditional Image Synthesis   |  LDM-VQ-4 (200 DDIM steps, eta=1)| 2.95 (3.0)          | 2.22 (2.23)| 0.66 | 0.48 | https://ommer-lab.com/files/latent-diffusion/lsun_bedrooms.zip |                                                 |  
-| ImageNet                        | Class-conditional Image Synthesis | LDM-VQ-8 (200 DDIM steps, eta=1) | 7.77(7.76)* /15.82** | 201.56(209.52)* /78.82** | 0.84* / 0.65** | 0.35* / 0.63** |   https://ommer-lab.com/files/latent-diffusion/cin.zip                                                                   | *: w/ guiding, classifier_scale 10  **: w/o guiding, scores in bracket calculated with script provided by [ADM](https://github.com/openai/guided-diffusion) |   
-| Conceptual Captions             |  Text-conditional Image Synthesis | LDM-VQ-f4 (100 DDIM steps, eta=0) | 16.79         | 13.89           | N/A | N/A |              https://ommer-lab.com/files/latent-diffusion/text2img.zip                                | finetuned from LAION                            |   
-| OpenImages                      | Super-resolution   | LDM-VQ-4     | N/A            | N/A               | N/A    | N/A    |                                    https://ommer-lab.com/files/latent-diffusion/sr_bsr.zip                                    | BSR image degradation                           |
-| OpenImages                      | Layout-to-Image Synthesis    | LDM-VQ-4 (200 DDIM steps, eta=0) | 32.02         | 15.92           | N/A    | N/A    |                  https://ommer-lab.com/files/latent-diffusion/layout2img_model.zip                                           |                                                 | 
-| Landscapes      |  Semantic Image Synthesis   | LDM-VQ-4  | N/A             | N/A               | N/A    | N/A    |           https://ommer-lab.com/files/latent-diffusion/semantic_synthesis256.zip                                    |                                                 |
-| Landscapes       |  Semantic Image Synthesis   | LDM-VQ-4  | N/A             | N/A               | N/A    | N/A    |           https://ommer-lab.com/files/latent-diffusion/semantic_synthesis.zip                                    |             finetuned on resolution 512x512                                     |
+| Datset              | Task                              | Model                             | FID                  | IS                       | Prec           | Recall         | Link                                                                   | Comments                                                                                                                                                    |
+| ------------------- | --------------------------------- | --------------------------------- | -------------------- | ------------------------ | -------------- | -------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CelebA-HQ           | Unconditional Image Synthesis     | LDM-VQ-4 (200 DDIM steps, eta=0)  | 5.11 (5.11)          | 3.29                     | 0.72           | 0.49           | https://ommer-lab.com/files/latent-diffusion/celeba.zip                |                                                                                                                                                             |
+| FFHQ                | Unconditional Image Synthesis     | LDM-VQ-4 (200 DDIM steps, eta=1)  | 4.98 (4.98)          | 4.50 (4.50)              | 0.73           | 0.50           | https://ommer-lab.com/files/latent-diffusion/ffhq.zip                  |                                                                                                                                                             |
+| LSUN-Churches       | Unconditional Image Synthesis     | LDM-KL-8 (400 DDIM steps, eta=0)  | 4.02 (4.02)          | 2.72                     | 0.64           | 0.52           | https://ommer-lab.com/files/latent-diffusion/lsun_churches.zip         |                                                                                                                                                             |
+| LSUN-Bedrooms       | Unconditional Image Synthesis     | LDM-VQ-4 (200 DDIM steps, eta=1)  | 2.95 (3.0)           | 2.22 (2.23)              | 0.66           | 0.48           | https://ommer-lab.com/files/latent-diffusion/lsun_bedrooms.zip         |                                                                                                                                                             |
+| ImageNet            | Class-conditional Image Synthesis | LDM-VQ-8 (200 DDIM steps, eta=1)  | 7.77(7.76)* /15.82** | 201.56(209.52)* /78.82** | 0.84* / 0.65** | 0.35* / 0.63** | https://ommer-lab.com/files/latent-diffusion/cin.zip                   | *: w/ guiding, classifier_scale 10  **: w/o guiding, scores in bracket calculated with script provided by [ADM](https://github.com/openai/guided-diffusion) |
+| Conceptual Captions | Text-conditional Image Synthesis  | LDM-VQ-f4 (100 DDIM steps, eta=0) | 16.79                | 13.89                    | N/A            | N/A            | https://ommer-lab.com/files/latent-diffusion/text2img.zip              | finetuned from LAION                                                                                                                                        |
+| OpenImages          | Super-resolution                  | LDM-VQ-4                          | N/A                  | N/A                      | N/A            | N/A            | https://ommer-lab.com/files/latent-diffusion/sr_bsr.zip                | BSR image degradation                                                                                                                                       |
+| OpenImages          | Layout-to-Image Synthesis         | LDM-VQ-4 (200 DDIM steps, eta=0)  | 32.02                | 15.92                    | N/A            | N/A            | https://ommer-lab.com/files/latent-diffusion/layout2img_model.zip      |                                                                                                                                                             |
+| Landscapes          | Semantic Image Synthesis          | LDM-VQ-4                          | N/A                  | N/A                      | N/A            | N/A            | https://ommer-lab.com/files/latent-diffusion/semantic_synthesis256.zip |                                                                                                                                                             |
+| Landscapes          | Semantic Image Synthesis          | LDM-VQ-4                          | N/A                  | N/A                      | N/A            | N/A            | https://ommer-lab.com/files/latent-diffusion/semantic_synthesis.zip    | finetuned on resolution 512x512                                                                                                                             |
 
 
 ### Get the models
