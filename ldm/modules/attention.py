@@ -209,7 +209,8 @@ class BasicTransformerBlock(nn.Module):
         return checkpoint(self._forward, (x, context), self.parameters(), self.checkpoint)
 
     def _forward(self, x, context=None):
-        x = self.attn1(self.norm1(x)) + x
+        # NOTE: Not 100% sure why we need to do x.contiguous(), but it prevents the "RuntimeError: view size is not compatible with input tensor's size and stride" error when using MPS backend
+        x = self.attn1(self.norm1(x.contiguous())) + x
         x = self.attn2(self.norm2(x), context=context) + x
         x = self.ff(self.norm3(x)) + x
         return x
